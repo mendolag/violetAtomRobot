@@ -14,8 +14,8 @@ the Free Software Foundation.
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 
-Adafruit_DCMotor * right = AFMS.getMotor(4);
-Adafruit_DCMotor * left = AFMS.getMotor(3);
+Adafruit_DCMotor * right = AFMS.getMotor(2);
+Adafruit_DCMotor * left = AFMS.getMotor(1);
 
 const int ANALOGRIGHT = 0; //ANALOGRIGHT on analog pin 0
 const int ANALOGCENTER = 1; //Pot on analog pin 0
@@ -25,7 +25,7 @@ const int SINISTRA = 1;
 const int DRITTO = 0;
 const int MARGINE = 5;
 const int DIM_BUFFER = 10;
-const int DELAY = 300;
+const int DELAY = 25;
 
 CircularBuffer bufferCenter(DIM_BUFFER);
 CircularBuffer bufferRight(DIM_BUFFER);
@@ -61,33 +61,32 @@ int direzione() {
   int valRight = analogRead(ANALOGRIGHT); //Read potentiometer 
   int valCenter = analogRead(ANALOGCENTER); //Read potentiometer 
   int valLeft = analogRead(ANALOGLEFT); //Read potentiometer 
-  int distRightCurrent = map(valRight, 50, 400, 80, 10); //Convert to centimeters
-  int distCenterCurrent = map(valCenter, 50, 400, 80, 10); //Convert to centimeters
-  int distLeftCurrent = map(valLeft, 50, 400, 80, 10); //Convert to centimeters
+  int distRightCurrent = map(valRight, 0, 700, 30, 4); //Convert to centimeters
+  int distCenterCurrent = map(valCenter, 0, 700, 30, 4); //Convert to centimeters
+  int distLeftCurrent = map(valLeft, 0, 700, 30, 4); //Convert to centimeters
   bufferCenter.pushElement(distCenterCurrent);
   bufferLeft.pushElement(distLeftCurrent);
   bufferRight.pushElement(distRightCurrent);
-
-  Serial.print("Analog Reading: ");
-  Serial.print(valRight); //Print raw analog value
-  Serial.print("\t");
+//  Serial.print("Analog Reading: ");
+//  Serial.print(valRight); //Print raw analog value
+//  Serial.print("\t");
   Serial.print(valCenter); //Print raw analog value
   Serial.print("\t");
-  Serial.print(valLeft); //Print raw analog value
-  Serial.print("\t");
-  Serial.print("  Centimeters: ");
-  Serial.print("right : ");
-  Serial.print(distRightCurrent); //Print distance
-  Serial.print("cm"); //Print centimeter abbrev
-  Serial.print("\t");
+//  Serial.print(valLeft); //Print raw analog value
+//  Serial.print("\t");
+//  Serial.print("  Centimeters: ");
+//  Serial.print("right : ");
+//  Serial.print(distRightCurrent); //Print distance
+//  Serial.print("cm"); //Print centimeter abbrev
+//  Serial.print("\t");
   Serial.print("center : ");
   Serial.print(distCenterCurrent); //Print distance
   Serial.print("cm"); //Print centimeter abbrev
-  Serial.print("\t");
-  Serial.print("left : ");
-  Serial.print(distLeftCurrent); //Print distance
-  Serial.print("cm"); //Print centimeter abbrev
-  Serial.print("\t");
+//  Serial.print("\t");
+//  Serial.print("left : ");
+//  Serial.print(distLeftCurrent); //Print distance
+//  Serial.print("cm"); //Print centimeter abbrev
+//  Serial.print("\t");
 
   int distCenter = bufferCenter.averageLast(DIM_BUFFER);
   int distRight = bufferRight.averageLast(DIM_BUFFER);
