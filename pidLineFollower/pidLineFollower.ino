@@ -28,8 +28,8 @@ const int s7 = 6;
 const int s8 = 7;
 
 // 
-const int Kp = 30;
-const int Kd = 55;
+const int Kp = 15;
+const int Kd = 50;
 
 int p = 0;
 int d = 0;
@@ -47,7 +47,7 @@ void setup() {
   Serial.println("Program started.");
   
   //Default: the IR will only be turned on during reads.
-  mySensorBar.setBarStrobe();
+  mySensorBar.clearBarStrobe();
 
   //Don't forget to call .begin() to get the bar ready.  This configures HW.
   uint8_t returnStatus = mySensorBar.begin();
@@ -82,40 +82,68 @@ void loop() {
 
   for (int i = 0; i<8; i++) {
     sensorRead[i] = rawValue & (1 << i);
-//    Serial.println("s" + (String)(i+1) + ": " + (String)sensorRead[i]);
+//   Serial.println("s" + (String)(i+1) + ": " + (String)sensorRead[i]);
   }
   
   int error = 0;
-
-  if (sensorRead[s1]){
-        error = 3;
-      }
-  else if (sensorRead[s2]) {
-   error = 2; 
+  boolean center=sensorRead[s4] || sensorRead[s5];
+  int left=0;
+  int right=0;
+  if(sensorRead[s1]){
+    left+=4;
   }
-  else if (sensorRead[s3]){
-    error = 1;          
+  if(sensorRead[s2]){
+    left+=2;
   }
-  else if (sensorRead[s4] || sensorRead[s5]){
-    error = 0;          
+  if(sensorRead[s3]){
+    left+=1;
   }
-  else if (sensorRead[s6]) {
-     error = -1; 
+  if(sensorRead[s6]){
+    right+=1;
+  }
+  if(sensorRead[s7]){
+    if(right==0){
+      right=3;
+    }else{
+    right+=2;
     }
-  else if (sensorRead[s7]){
-    error = -2;          
   }
-  else if (sensorRead[s8]){
-    error = -4;          
+  if(sensorRead[s8]){
+    if(right==0){
+      right=6;
+    }else{
+    right+=4;
+    }
   }
+
+  if(right>left){
+    if((right%2==0 && center)){
+      error=0;
+    }else{
+      error=right*-1;
+    }
+  }else{
+    if((left%2==0 && center)){
+      error=0;
+    }else{
+      error=left*1;
+    }
+  }
+
+//Serial.print("error:");
+//Serial.println(error);
 
   p = error;
   d = error - previousError;
   pidValue = Kp*p + Kd*d;
+  int backupError=previousError;
+
   previousError = error; 
     
-  leftMotorSpeed = 100 + pidValue;
-  rightMotorSpeed = 100-pidValue;
+  leftMotorSpeed = 150 + pidValue;
+  rightMotorSpeed = 150-pidValue;
+//  Serial.print(leftMotorSpeed);
+//  Serial.print(rightMotorSpeed);
 
   if (!isMotorOn){
     leftMotor->setSpeed(0);
@@ -123,23 +151,49 @@ void loop() {
     leftMotor->run(RELEASE);
     rightMotor->run(RELEASE);
   } else {
-    Serial.println("motorOn");
-    leftMotor->setSpeed(leftMotorSpeed*1);
-    rightMotor->setSpeed(rightMotorSpeed*1);
-    if(leftMotorSpeed>=50){
+  if(!center){
+    if(error==0){
+     leftMotor->setSpeed(200);
+    rightMotor->setSpeed(200);
+      if(backupError<0){
+      leftMotor->run(BACKWARD);
+      rightMotor->run(FORWARD);
+      delay(200);
+        }else if(backupError>0){
+          leftMotor->run(FORWARD);
+      rightMotor->run(BACKWARD);
+      delay(200);
+        }else{
+      leftMotor->run(BACKWARD);
+      rightMotor->run(BACKWARD);
+      delay(100);}
+      return;
+    }
+    else{
+      if(leftMotorSpeed>=120){
       leftMotor->run(FORWARD);
      }
      else {
       leftMotor->run(BACKWARD);
      }
-     if(rightMotorSpeed>=50){
-      Serial.println("RF");
+    if(rightMotorSpeed>=120){
       rightMotor->run(FORWARD);
      }
      else {
-      Serial.println("RF");
       rightMotor->run(BACKWARD);
      }
+    }
+  }else{
+  leftMotor->run(FORWARD);
+  rightMotor->run(FORWARD);
+  
+  }
+    
+    Serial.println("motorOn");
+    leftMotor->setSpeed(abs(leftMotorSpeed));
+    rightMotor->setSpeed(abs(rightMotorSpeed));
+
+
   }
    
 
