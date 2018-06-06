@@ -91,30 +91,22 @@ void loop() {
   int right=0;
   if(sensorRead[s1]){
     left+=4;
-  }
-  if(sensorRead[s2]){
+  }else if(sensorRead[s2]){
     left+=2;
   }
   if(sensorRead[s3]){
-    left+=1;
-  }
-  if(sensorRead[s6]){
-    right+=1;
-  }
-  if(sensorRead[s7]){
-    if(right==0){
-      right=3;
-    }else{
-    right+=2;
-    }
+    left+=1
   }
   if(sensorRead[s8]){
-    if(right==0){
-      right=6;
-    }else{
     right+=4;
-    }
+  }else if(sensorRead[s7]){
+    right+=2;
   }
+  if(sensorRead[s6]){
+     right+=1;
+  }
+
+
 
   if(right>left){
     if((right%2==0 && center)){
