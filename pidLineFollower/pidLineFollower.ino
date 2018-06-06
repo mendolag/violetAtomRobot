@@ -114,12 +114,15 @@ void loop() {
     }else{
       error=right*-1;
     }
-  }else{
+  }
+  else if (right<left){
     if((left%2==0 && center)){
       error=0;
     }else{
       error=left*1;
     }
+  }else{
+    error=0;
   }
 
 //Serial.print("error:");
