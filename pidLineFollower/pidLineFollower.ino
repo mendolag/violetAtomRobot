@@ -148,8 +148,8 @@ void loop() {
   } else {
   if(!center){
     if(error==0){
-     leftMotor->setSpeed(200);
-    rightMotor->setSpeed(200);
+     leftMotor->setSpeed(120);
+    rightMotor->setSpeed(120);
       if(backupError<0){
       leftMotor->run(BACKWARD);
       rightMotor->run(FORWARD);
