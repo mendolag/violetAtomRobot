@@ -95,7 +95,7 @@ void loop() {
     left+=2;
   }
   if(sensorRead[s3]){
-    left+=1
+    left+=1;
   }
   if(sensorRead[s8]){
     right+=4;
