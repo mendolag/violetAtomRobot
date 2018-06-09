@@ -40,9 +40,9 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 // Adafruit_MotorShield AFMS = Adafruit_MotorShield(0x61); 
 
 // Select which 'port' M1, M2, M3 or M4. In this case, M1
-Adafruit_DCMotor *rightMotor = AFMS.getMotor(2); //(3);
+Adafruit_DCMotor *rightMotor = AFMS.getMotor(3); //(3);
 // You can also make another motor on port M2
-Adafruit_DCMotor *leftMotor = AFMS.getMotor(1); //(4);
+Adafruit_DCMotor *leftMotor = AFMS.getMotor(4); //(4);
 
 // Uncomment one of the four lines to match your SX1509's address
 //  pin selects. SX1509 breakout defaults to [0:0] (0x3E).

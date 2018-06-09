@@ -3,8 +3,8 @@
 #include "sensorbar.h"
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
-Adafruit_DCMotor *leftMotor = AFMS.getMotor(1);
-Adafruit_DCMotor *rightMotor = AFMS.getMotor(2);
+Adafruit_DCMotor *leftMotor = AFMS.getMotor(4);
+Adafruit_DCMotor *rightMotor = AFMS.getMotor(3);
 
 #define IDLE_STATE 0
 #define READ_LINE 1
@@ -28,7 +28,7 @@ const int s7 = 6;
 const int s8 = 7;
 
 // 
-const int Kp = 15;
+const int Kp = 20;
 const int Kd = 50;
 
 int p = 0;
@@ -66,14 +66,14 @@ void setup() {
 
 
 void loop() {
-  if (digitalRead(8) == HIGH){
-    if (isMotorOn){
-      isMotorOn = false;
-    } else {
-      isMotorOn = true;
-    }
-    delay(500);
-  }
+//  if (digitalRead(8) == HIGH){
+//    if (isMotorOn){
+//      isMotorOn = false;
+//    } else {
+//      isMotorOn = true;
+//    }
+//    delay(500);
+//  }
 
   
   uint8_t rawValue = mySensorBar.getRaw();
@@ -91,7 +91,7 @@ void loop() {
   int right=0;
   if(sensorRead[s1]){
     left+=4;
-  }else if(sensorRead[s2]){
+  }if(sensorRead[s2]){
     left+=2;
   }
   if(sensorRead[s3]){
@@ -99,7 +99,7 @@ void loop() {
   }
   if(sensorRead[s8]){
     right+=4;
-  }else if(sensorRead[s7]){
+  }if(sensorRead[s7]){
     right+=2;
   }
   if(sensorRead[s6]){
@@ -136,11 +136,11 @@ void loop() {
   previousError = error; 
     
   leftMotorSpeed = 150 + pidValue;
-  rightMotorSpeed = 150-pidValue;
+  rightMotorSpeed = 150 - pidValue;
 //  Serial.print(leftMotorSpeed);
 //  Serial.print(rightMotorSpeed);
 
-  if (!isMotorOn){
+  if (digitalRead(8) == HIGH){
     leftMotor->setSpeed(0);
     rightMotor->setSpeed(0);
     leftMotor->run(RELEASE);
@@ -148,8 +148,8 @@ void loop() {
   } else {
   if(!center){
     if(error==0){
-     leftMotor->setSpeed(120);
-    rightMotor->setSpeed(120);
+     leftMotor->setSpeed(180);
+    rightMotor->setSpeed(180);
       if(backupError<0){
       leftMotor->run(BACKWARD);
       rightMotor->run(FORWARD);
@@ -184,7 +184,7 @@ void loop() {
   
   }
     
-    Serial.println("motorOn");
+//    Serial.println("motorOn");
     leftMotor->setSpeed(abs(leftMotorSpeed));
     rightMotor->setSpeed(abs(rightMotorSpeed));
 
